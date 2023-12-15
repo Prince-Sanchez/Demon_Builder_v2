@@ -12,17 +12,15 @@ public class Users {
     private int mUserID;
     private String mUsername;
     private String mPassword;
-    private String mIsAdmin;
+    private Boolean mIsAdmin;
 
-    public Users(String username, String password, String isAdmin) {
+    public Users(String username, String password, boolean isAdmin) {
         mUsername = username;
         mPassword = password;
         mIsAdmin = isAdmin;
     }
 
-    public String getUsername() {
-        return mUsername;
-    }
+
 
     @Override
     public String toString() {
@@ -42,6 +40,10 @@ public class Users {
         mUserID = userID;
     }
 
+    public String getUsername() {
+        return mUsername;
+    }
+
     public void setUsername(String username) {
         mUsername = username;
     }
@@ -54,11 +56,11 @@ public class Users {
         mPassword = password;
     }
 
-    public String getIsAdmin() {
+    public boolean getIsAdmin() {
         return mIsAdmin;
     }
 
-    public void setIsAdmin(String isAdmin) {
+    public void setIsAdmin(Boolean isAdmin) {
         mIsAdmin = isAdmin;
     }
 
