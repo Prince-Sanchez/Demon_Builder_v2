@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DemonBuilderV2</string>
+    <string-array name="workout_types">
+        <item>Select Workout Type</item>
+        <item>Push</item>
+        <item>Pull</item>
+        <item>Lower</item>
+    </string-array>
 </resources>

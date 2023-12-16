@@ -20,6 +20,8 @@ public class DemonLandingPageActivity extends AppCompatActivity {
     private Button btnAdminArea;
     private Button btnLogout;
     private Button btnDeleteAccount;
+    private Button btnExercises;
+    private Button btnWorkouts;
     private String username;
 
 
@@ -33,12 +35,30 @@ public class DemonLandingPageActivity extends AppCompatActivity {
         btnAdminArea = findViewById(R.id.btnAdminArea);
         btnLogout = findViewById(R.id.btnLogout);
         btnDeleteAccount = findViewById((R.id.btnDeleteAccount));
+        btnExercises = findViewById((R.id.btnExercises));
+        btnWorkouts = findViewById((R.id.btnWorkouts));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         // Retrieve username from SharedPreferences
         username = sharedPreferences.getString("username", null);
         // Check if the user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+
+        btnExercises.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DemonLandingPageActivity.this, DemonExercisesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnWorkouts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DemonLandingPageActivity.this, DemonWorkoutActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
