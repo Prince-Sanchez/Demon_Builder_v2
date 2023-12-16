@@ -2,6 +2,7 @@ package com.example.demonbuilderv2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -59,7 +60,14 @@ public class DemonLoginActivity extends AppCompatActivity {
                 if (user != null) {
                     Toast.makeText(DemonLoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                     // Handle successful login here, e.g., navigate to another activity
+                    SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("username", username); // 'username' is the string of the logged-in user
+                    editor.apply();
+
                     Intent intent = new Intent(DemonLoginActivity.this, DemonLandingPageActivity.class);
+                    intent.putExtra("USERNAME", username);
+                    intent.putExtra("IS_ADMIN", user.getIsAdmin());
                     startActivity(intent);
                     finish(); // Close the login activity so the user can't go back to it
                 } else {

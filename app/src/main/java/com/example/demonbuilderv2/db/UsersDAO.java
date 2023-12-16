@@ -21,6 +21,8 @@ public interface UsersDAO {
     void delete(Users users);
 
     // Method for user authentication
-    @Query("SELECT * FROM users_table WHERE mUsername = :username AND mPassword = :password")
+    @Query("SELECT * FROM users WHERE mUsername = :username AND mPassword = :password")
     Users getUserByUsernameAndPassword(String username, String password);
+    @Query("SELECT * FROM users WHERE mUsername = :username")
+    Users findUserByUsername(String username);
 }

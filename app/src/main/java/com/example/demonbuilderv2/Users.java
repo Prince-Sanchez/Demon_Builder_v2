@@ -5,14 +5,14 @@ import androidx.room.PrimaryKey;
 
 import com.example.demonbuilderv2.db.DemonDatabase;
 
-@Entity(tableName = DemonDatabase.USERS_TABLE)
+@Entity(tableName = "users")
 public class Users {
 
     @PrimaryKey(autoGenerate = true)
     private int mUserID;
     private String mUsername;
     private String mPassword;
-    private Boolean mIsAdmin;
+    private boolean mIsAdmin;
 
     public Users(String username, String password, boolean isAdmin) {
         mUsername = username;
@@ -60,7 +60,7 @@ public class Users {
         return mIsAdmin;
     }
 
-    public void setIsAdmin(Boolean isAdmin) {
+    public void setIsAdmin(boolean isAdmin) {
         mIsAdmin = isAdmin;
     }
 
