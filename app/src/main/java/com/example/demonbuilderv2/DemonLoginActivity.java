@@ -59,7 +59,6 @@ public class DemonLoginActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 if (user != null) {
                     Toast.makeText(DemonLoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                    // Handle successful login here, e.g., navigate to another activity
                     SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("username", username); // 'username' is the string of the logged-in user

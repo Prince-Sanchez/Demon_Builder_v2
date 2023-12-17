@@ -7,6 +7,8 @@ import androidx.room.Query;
 
 import com.example.demonbuilderv2.Logs;
 
+import java.util.List;
+
 @Dao
 public interface LogsDAO {
 
@@ -15,4 +17,9 @@ public interface LogsDAO {
 
     @Query("UPDATE logs SET achievements = :achievements WHERE id = :userId AND date = :date")
     void updateAchievementsForUserOnDate(int userId, String date, String achievements);
+
+    @Query("SELECT * FROM logs ORDER BY date DESC")
+    List<Logs> getAllWorkoutLogs();
+
+
 }

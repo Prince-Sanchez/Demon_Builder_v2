@@ -43,7 +43,6 @@ public class ExerciseListActivity extends AppCompatActivity {
     }
 
     private void loadExercises(String muscleGroup) {
-        // Database operations should be done on a background thread
         new Thread(() -> {
             ExercisesDAO dao = DemonDatabase.getInstance(getApplicationContext()).ExercisesDAO();
             List<Exercises> exercises = dao.getExercisesForMuscleGroup(muscleGroup);
@@ -57,7 +56,7 @@ public class ExerciseListActivity extends AppCompatActivity {
 
     public static class ExerciseAdapter extends RecyclerView.Adapter<ExerciseViewHolder> {
 
-        private List<Exercises> exerciseList; // The data for your list
+        private List<Exercises> exerciseList;
         private List<Logs> logsList;
 
         public ExerciseAdapter(List<Exercises> exercisesList) {

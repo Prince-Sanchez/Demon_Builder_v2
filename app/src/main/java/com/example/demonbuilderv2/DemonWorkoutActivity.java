@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -19,10 +20,12 @@ import com.example.demonbuilderv2.db.DemonDatabase;
 import com.example.demonbuilderv2.db.ExercisesDAO;
 import com.example.demonbuilderv2.db.LogsDAO;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 
@@ -39,7 +42,7 @@ public class DemonWorkoutActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewExercises);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        exerciseAdapter = new ExerciseListActivity.ExerciseAdapter(new ArrayList<>()); // Initialize with an empty list
+        exerciseAdapter = new ExerciseListActivity.ExerciseAdapter(new ArrayList<>());
         recyclerView.setAdapter(exerciseAdapter);
 
         spinnerWorkoutType = findViewById(R.id.spinnerWorkoutType);
@@ -49,16 +52,24 @@ public class DemonWorkoutActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerWorkoutType.setAdapter(adapter);
 
+        Button logWorkoutButton = findViewById(R.id.btnLogWorkout);
+        logWorkoutButton.setOnClickListener(view -> {
+            saveWorkoutLog();
+        });
+
+
         spinnerWorkoutType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedWorkoutType = parent.getItemAtPosition(position).toString();
                 if (!selectedWorkoutType.equals("Select Workout Type")) {
                     generateWorkout(selectedWorkoutType);
+                    findViewById(R.id.btnLogWorkout).setVisibility(View.VISIBLE);
                 }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                findViewById(R.id.btnLogWorkout).setVisibility(View.GONE);
             }
             private void generateWorkout(String workoutType) {
                 new Thread(() -> {
@@ -66,7 +77,7 @@ public class DemonWorkoutActivity extends AppCompatActivity {
                     ExercisesDAO exerciseDao = DemonDatabase.getInstance(getApplicationContext()).ExercisesDAO();
                     Random random = new Random();
 
-                    // Fetch all exercises for the muscle groups associated with the workout type
+                    // Fetching all exercises for the muscle groups associated with the workout type
                     List<Exercises> allExercises = new ArrayList<>();
                     if ("Push".equals(workoutType)) {
                         allExercises.addAll(exerciseDao.getExercisesForMuscleGroup("Chest"));
@@ -86,11 +97,11 @@ public class DemonWorkoutActivity extends AppCompatActivity {
                         allExercises.addAll(exerciseDao.getExercisesForMuscleGroup("Adductors"));
                     }
 
-                    // Shuffle the list of all exercises
+                    // Shuffles the list of all exercises
                     Collections.shuffle(allExercises, random);
 
-                    // Select a random subset from the shuffled list (7 or 8 exercises)
-                    int numberOfExercisesToSelect = Math.min(allExercises.size(), 7); // or 8 if you prefer
+                    // Selecting a random subset from the shuffled list (7 or 8 exercises)
+                    int numberOfExercisesToSelect = Math.min(allExercises.size(), 7);
                     workoutExercises.addAll(allExercises.subList(0, numberOfExercisesToSelect));
 
                     runOnUiThread(() -> updateUIWithExercises(workoutExercises));
@@ -115,13 +126,13 @@ public class DemonWorkoutActivity extends AppCompatActivity {
         repsEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
         repsEditText.setHint("Reps");
 
-        // Create a LinearLayout to hold the EditTexts
+        // Creating a LinearLayout to hold the EditTexts
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(setsEditText);
         layout.addView(repsEditText);
 
-        // Add padding to the LinearLayout
+        // Adding padding to the LinearLayout
         int padding = (int) (16 * getResources().getDisplayMetrics().density);
         layout.setPadding(padding, padding, padding, padding);
 
@@ -151,29 +162,21 @@ public class DemonWorkoutActivity extends AppCompatActivity {
     private final OnSetsRepsEnteredListener setsRepsEnteredListener = new OnSetsRepsEnteredListener() {
         @Override
         public void onSetsRepsEntered(Exercises exercise, int sets, int reps) {
-            saveWorkoutLog(exercise, sets, reps);
+            saveWorkoutLog();
         }
     };
-    private void saveWorkoutLog(Exercises exercise, int sets, int reps) {
-        // This should be run on a background thread
+    private void saveWorkoutLog() {
         new Thread(() -> {
-            // Create an instance of the workout log entry
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String currentDate = sdf.format(new Date());
+
             Logs workoutLog = new Logs();
-            workoutLog.setExerciseName(exercise.getName());
-            workoutLog.setDate(String.valueOf(new Date()));
+            workoutLog.setDate(currentDate);
 
-            DemonDatabase db = DemonDatabase.getInstance(getApplicationContext());
+            LogsDAO logsDAO = DemonDatabase.getInstance(getApplicationContext()).LogsDAO();
+            logsDAO.insertWorkoutLog(workoutLog);
 
-            LogsDAO LogsDAO = db.LogsDAO();
-
-            // Using DAO instance to call the insert method
-            com.example.demonbuilderv2.db.LogsDAO logsDAO;
-            LogsDAO.insertWorkoutLog(workoutLog);
-
-            // Remember to run UI operations on the main thread
-            // For example, if you want to show a Toast or update the UI
             runOnUiThread(() -> {
-                // Update UI or show confirmation message
                 Toast.makeText(getApplicationContext(), "Workout logged successfully", Toast.LENGTH_SHORT).show();
             });
         }).start();

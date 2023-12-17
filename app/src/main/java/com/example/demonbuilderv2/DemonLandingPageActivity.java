@@ -22,6 +22,10 @@ public class DemonLandingPageActivity extends AppCompatActivity {
     private Button btnDeleteAccount;
     private Button btnExercises;
     private Button btnWorkouts;
+    private Button btnLogs;
+    private Button getBtnAdminArea;
+    private Button btnWaterIntake;
+    private Button btnProfile;
     private String username;
 
 
@@ -37,17 +41,69 @@ public class DemonLandingPageActivity extends AppCompatActivity {
         btnDeleteAccount = findViewById((R.id.btnDeleteAccount));
         btnExercises = findViewById((R.id.btnExercises));
         btnWorkouts = findViewById((R.id.btnWorkouts));
+        btnLogs = findViewById((R.id.btnLogs));
+        btnAdminArea = findViewById((R.id.btnAdminArea));
+        btnWaterIntake = findViewById((R.id.btnWaterIntake));
+        btnProfile = findViewById((R.id.btnProfile));
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        // Retrieve username from SharedPreferences
-        username = sharedPreferences.getString("username", null);
-        // Check if the user is logged in
-        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+
+        try {
+            // Initialize the SharedPreferences object
+            SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+
+            // Retrieve username from SharedPreferences
+            username = sharedPreferences.getString("username", null);
+
+            // If username is null, it means no user is logged in, so redirect to login activity
+            if (username == null) {
+                redirectToLogin();
+            } else {
+                // User is logged in, update the UI with the username
+                textViewUsername.setText(username);
+            }
+        } catch (Exception e) {
+            // Handle the exception, log it, and/or redirect to login activity
+            e.printStackTrace();
+            redirectToLogin();
+        }
+
 
         btnExercises.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DemonLandingPageActivity.this, DemonExercisesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DemonLandingPageActivity.this, DemonProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnWaterIntake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DemonLandingPageActivity.this, DemonWaterLog.class);
+                startActivity(intent);
+            }
+        });
+
+        btnAdminArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DemonLandingPageActivity.this, DemonAdminActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnLogs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DemonLandingPageActivity.this, DemonLogActivity.class);
                 startActivity(intent);
             }
         });
@@ -83,7 +139,7 @@ public class DemonLandingPageActivity extends AppCompatActivity {
             }
         });
 
-        // Get the data from the intent
+        // Getting the data from the intent
         String username = getIntent().getStringExtra("USERNAME");
         boolean isAdmin = getIntent().getBooleanExtra("IS_ADMIN", false);
 
@@ -105,7 +161,7 @@ public class DemonLandingPageActivity extends AppCompatActivity {
             public void run() {
                 DemonDatabase db = DemonDatabase.getInstance(getApplicationContext());
                 UsersDAO dao = db.UsersDAO();
-                Users user = dao.findUserByUsername(username); // Assuming you have a method to find user by username
+                Users user = dao.findUserByUsername(username);
                 if (user != null) {
                     dao.delete(user); // Delete the user
                     runOnUiThread(new Runnable() {

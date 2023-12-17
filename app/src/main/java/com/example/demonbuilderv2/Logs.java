@@ -12,7 +12,7 @@ public class Logs {
     private String achievements;
 
     public Logs() {
-        // This constructor is empty
+        //Note to self Empty constructor
     }
 
     public Logs(String date, String achievements) {

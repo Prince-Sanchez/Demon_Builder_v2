@@ -15,7 +15,7 @@ import com.example.demonbuilderv2.Users;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Users.class, Exercises.class, Logs.class}, version = 3)
+@Database(entities = {Users.class, Exercises.class, Logs.class}, version = 5)
 public abstract class DemonDatabase extends RoomDatabase {
     public static final String DATABASE_NAME = "demon_database.db";
 

@@ -50,15 +50,12 @@ public class MainActivity extends AppCompatActivity {
         boolean isFirstRun = prefs.getBoolean("isFirstRun", true);
 
         if (isFirstRun) {
-            // Insert predefined users on a background thread
             AsyncTask.execute(() -> {
                 DemonDatabase db = DemonDatabase.getInstance(getApplicationContext());
                 UsersDAO usersDAO = db.UsersDAO();
                 usersDAO.insert(new Users("testuser1", "testuser1", false));
                 usersDAO.insert(new Users("admin2", "admin2", true));
             });
-
-            // Update SharedPreferences since the first run is complete
             prefs.edit().putBoolean("isFirstRun", false).apply();
         }
     }

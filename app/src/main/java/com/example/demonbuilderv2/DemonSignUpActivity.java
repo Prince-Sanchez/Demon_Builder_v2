@@ -37,11 +37,11 @@ public class DemonSignUpActivity extends AppCompatActivity {
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginUser();
+                signUpUser();
             }
         });
     }
-    private void loginUser() {
+    private void signUpUser() {
         String username = editTextUsernameSignUp.getText().toString().trim();
         String password = editTextPasswordSignUp.getText().toString().trim();
 
@@ -49,31 +49,38 @@ public class DemonSignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter both username and password", Toast.LENGTH_SHORT).show();
             return;
         }
-
         executorService.execute(() -> {
             UsersDAO dao = DemonDatabase.getInstance(getApplicationContext()).UsersDAO();
-            Users user = dao.getUserByUsernameAndPassword(username, password);
 
-            runOnUiThread(() -> {
-                if (user != null) {
+            // Creating a new user object
+            Users newUser = new Users(username, password, false);
+            newUser.setUsername(username);
+            newUser.setPassword(password);
+
+            try {
+                // Attempt to insert the new user
+                dao.insert(newUser);
+
+                // If no exception was thrown, assume the insert was successful
+                runOnUiThread(() -> {
                     Toast.makeText(DemonSignUpActivity.this, "Sign up successful", Toast.LENGTH_SHORT).show();
-                    // Handle successful login here, e.g., navigate to another activity
-                    SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("username", username); // 'username' is the string of the logged-in user
-                    editor.apply();
-
-                    Intent intent = new Intent(DemonSignUpActivity.this, DemonLandingPageActivity.class);
-                    intent.putExtra("USERNAME", username);
-                    intent.putExtra("IS_ADMIN", user.getIsAdmin());
-                    startActivity(intent);
-                    finish(); // Close the login activity so the user can't go back to it
-                } else {
-                    Toast.makeText(DemonSignUpActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
-                }
-            });
+                    // Navigate to the landing page or login page
+                    navigateToLandingPage(username);
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    Toast.makeText(DemonSignUpActivity.this, "Sign up failed", Toast.LENGTH_SHORT).show();
+                });
+            }
         });
     }
+
+    private void navigateToLandingPage(String username) {
+        Intent intent = new Intent(this, DemonLandingPageActivity.class);
+        startActivity(intent);
+        finish(); // Closes the current activity
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
