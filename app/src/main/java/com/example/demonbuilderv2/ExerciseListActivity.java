@@ -58,6 +58,7 @@ public class ExerciseListActivity extends AppCompatActivity {
     public static class ExerciseAdapter extends RecyclerView.Adapter<ExerciseViewHolder> {
 
         private List<Exercises> exerciseList; // The data for your list
+        private List<Logs> logsList;
 
         public ExerciseAdapter(List<Exercises> exercisesList) {
             this.exerciseList = exercisesList;
@@ -66,13 +67,15 @@ public class ExerciseListActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ExerciseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_exercise_list, parent, false);
             return new ExerciseViewHolder(parent);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
             Exercises exercise = exerciseList.get(position);
-            holder.textView.setText(exercise.getName());
+            holder.textView.setText(exercise.getName() + " " + exercise.getSets() + " Sets x " + exercise.getReps() + " Reps");
+
         }
 
         @Override
@@ -82,6 +85,9 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         public void setExercises(List<Exercises> exercises) {
             this.exerciseList = exercises;
+        }
+        public void setLogsList(List<Logs> logsList) {
+            this.logsList = logsList;
         }
     }
 }

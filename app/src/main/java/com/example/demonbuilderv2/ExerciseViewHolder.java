@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ExerciseViewHolder extends RecyclerView.ViewHolder {
     TextView textView;
+    TextView setsRepsTextView;
 
     public ExerciseViewHolder(ViewGroup parent) {
         super(new TextView(parent.getContext()));
@@ -23,5 +24,9 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
         textView.setGravity(Gravity.CENTER_VERTICAL);
         textView.setTypeface(null, Typeface.BOLD);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+    }
+    public void bind(Exercises exercise) {
+        textView.setText(exercise.getName());
+        setsRepsTextView.setText(exercise.getSets() + " sets x " + exercise.getReps() + " reps");
     }
 }

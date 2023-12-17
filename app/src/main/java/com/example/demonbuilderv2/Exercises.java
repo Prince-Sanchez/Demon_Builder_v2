@@ -8,10 +8,15 @@ public class Exercises {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
+    private int sets;
+    private int reps;
+
     public String name;
     public String muscleGroup;
 
-    public Exercises(String name, String muscleGroup) {
+    public Exercises(int sets, int reps, String name, String muscleGroup) {
+        this.sets = sets;
+        this.reps = reps;
         this.name = name;
         this.muscleGroup = muscleGroup;
     }
@@ -22,6 +27,21 @@ public class Exercises {
 
     public void setId(int id) {
         this.id = id;
+    }
+    public int getSets() {
+        return sets;
+    }
+
+    public void setSets(int sets) {
+        this.sets = sets;
+    }
+
+    public int getReps() {
+        return reps;
+    }
+
+    public void setReps(int reps) {
+        this.reps = reps;
     }
 
     public String getName() {

@@ -1,20 +1,27 @@
 package com.example.demonbuilderv2;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.demonbuilderv2.db.DemonDatabase;
 import com.example.demonbuilderv2.db.ExercisesDAO;
+import com.example.demonbuilderv2.db.LogsDAO;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -94,5 +101,81 @@ public class DemonWorkoutActivity extends AppCompatActivity {
                 exerciseAdapter.notifyDataSetChanged();
             }
         });
+    }
+    public void showSetsRepsDialog(Exercises exercise, OnSetsRepsEnteredListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Sets and Reps");
+
+        // Create EditTexts programmatically for sets and reps
+        final EditText setsEditText = new EditText(this);
+        setsEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        setsEditText.setHint("Sets");
+
+        final EditText repsEditText = new EditText(this);
+        repsEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        repsEditText.setHint("Reps");
+
+        // Create a LinearLayout to hold the EditTexts
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(setsEditText);
+        layout.addView(repsEditText);
+
+        // Add padding to the LinearLayout
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        layout.setPadding(padding, padding, padding, padding);
+
+        builder.setView(layout);
+
+        // Set up the buttons for the AlertDialog
+        builder.setPositiveButton("Save", (dialogInterface, i) -> {
+            try {
+                int sets = Integer.parseInt(setsEditText.getText().toString());
+                int reps = Integer.parseInt(repsEditText.getText().toString());
+                listener.onSetsRepsEntered(exercise, sets, reps);
+            } catch (NumberFormatException e) {
+                // Handle exception if user enters invalid number
+                Toast.makeText(this, "Please enter valid numbers for sets and reps.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public interface OnSetsRepsEnteredListener {
+        void onSetsRepsEntered(Exercises exercise, int sets, int reps);
+    }
+    private final OnSetsRepsEnteredListener setsRepsEnteredListener = new OnSetsRepsEnteredListener() {
+        @Override
+        public void onSetsRepsEntered(Exercises exercise, int sets, int reps) {
+            saveWorkoutLog(exercise, sets, reps);
+        }
+    };
+    private void saveWorkoutLog(Exercises exercise, int sets, int reps) {
+        // This should be run on a background thread
+        new Thread(() -> {
+            // Create an instance of the workout log entry
+            Logs workoutLog = new Logs();
+            workoutLog.setExerciseName(exercise.getName());
+            workoutLog.setDate(String.valueOf(new Date()));
+
+            DemonDatabase db = DemonDatabase.getInstance(getApplicationContext());
+
+            LogsDAO LogsDAO = db.LogsDAO();
+
+            // Using DAO instance to call the insert method
+            com.example.demonbuilderv2.db.LogsDAO logsDAO;
+            LogsDAO.insertWorkoutLog(workoutLog);
+
+            // Remember to run UI operations on the main thread
+            // For example, if you want to show a Toast or update the UI
+            runOnUiThread(() -> {
+                // Update UI or show confirmation message
+                Toast.makeText(getApplicationContext(), "Workout logged successfully", Toast.LENGTH_SHORT).show();
+            });
+        }).start();
     }
 }

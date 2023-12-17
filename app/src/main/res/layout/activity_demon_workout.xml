@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nosifer"
         android:text="Demon Builder"
+        android:textColor="@color/lightGray"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewExercises"
         app:layout_constraintEnd_toEndOf="parent"

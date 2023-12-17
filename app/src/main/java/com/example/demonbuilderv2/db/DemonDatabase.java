@@ -9,12 +9,13 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.demonbuilderv2.Exercises;
+import com.example.demonbuilderv2.Logs;
 import com.example.demonbuilderv2.Users;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Users.class, Exercises.class}, version = 1)
+@Database(entities = {Users.class, Exercises.class, Logs.class}, version = 3)
 public abstract class DemonDatabase extends RoomDatabase {
     public static final String DATABASE_NAME = "demon_database.db";
 
@@ -23,6 +24,7 @@ public abstract class DemonDatabase extends RoomDatabase {
 
     public abstract UsersDAO UsersDAO();
     public abstract ExercisesDAO ExercisesDAO();
+    public abstract LogsDAO LogsDAO();
 
     private static RoomDatabase.Callback roomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
@@ -32,117 +34,121 @@ public abstract class DemonDatabase extends RoomDatabase {
             // Using Executors to insert users
             ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(3);
             databaseWriteExecutor.execute(() -> {
-                // Get DAO and insert users
+                // Get DAO and insert users and exercises and logs
                 UsersDAO usersDao = instance.UsersDAO();
                 ExercisesDAO exerciseDao = instance.ExercisesDAO();
+                LogsDAO logsDAO = instance.LogsDAO();
                 //Inserting predefined users
                 usersDao.insert(new Users("testuser1", "testuser1", false));
                 usersDao.insert(new Users("admin2", "admin2", true));
                 //Inserting exercises
                 // Chest Exercises
-                exerciseDao.insert(new Exercises("Bench Press", "Chest"));
-                exerciseDao.insert(new Exercises("Push Up", "Chest"));
-                exerciseDao.insert(new Exercises("Incline Bench Press", "Chest"));
-                exerciseDao.insert(new Exercises("Chest Fly", "Chest"));
-                exerciseDao.insert(new Exercises("Dumbbell Press", "Chest"));
+                exerciseDao.insert(new Exercises(4, 8,"Bench Press", "Chest"));
+                exerciseDao.insert(new Exercises(4, 8,"Push Up", "Chest"));
+                exerciseDao.insert(new Exercises(4, 8,"Incline Bench Press", "Chest"));
+                exerciseDao.insert(new Exercises(4, 8,"Chest Fly", "Chest"));
+                exerciseDao.insert(new Exercises(4, 8,"Dumbbell Press", "Chest"));
 
                 // Back Exercises
-                exerciseDao.insert(new Exercises("Pull Up", "Back"));
-                exerciseDao.insert(new Exercises("Bent Over Row", "Back"));
-                exerciseDao.insert(new Exercises("Deadlift", "Back"));
-                exerciseDao.insert(new Exercises("Lat Pulldown", "Back"));
-                exerciseDao.insert(new Exercises("Seated Row", "Back"));
+                exerciseDao.insert(new Exercises(4, 8,"Pull Up", "Back"));
+                exerciseDao.insert(new Exercises(4, 8,"Bent Over Row", "Back"));
+                exerciseDao.insert(new Exercises(4, 8,"Deadlift", "Back"));
+                // Back Exercises
+                exerciseDao.insert(new Exercises(4, 8, "Lat Pulldown", "Back"));
+                exerciseDao.insert(new Exercises(4, 8, "Seated Row", "Back"));
 
                 // Biceps Exercises
-                exerciseDao.insert(new Exercises("Bicep Curl", "Biceps"));
-                exerciseDao.insert(new Exercises("Hammer Curl", "Biceps"));
-                exerciseDao.insert(new Exercises("Preacher Curl", "Biceps"));
-                exerciseDao.insert(new Exercises("Concentration Curl", "Biceps"));
-                exerciseDao.insert(new Exercises("Cable Curl", "Biceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Bicep Curl", "Biceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Hammer Curl", "Biceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Preacher Curl", "Biceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Concentration Curl", "Biceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Cable Curl", "Biceps"));
 
                 // Triceps Exercises
-                exerciseDao.insert(new Exercises("Tricep Dip", "Triceps"));
-                exerciseDao.insert(new Exercises("Skull Crusher", "Triceps"));
-                exerciseDao.insert(new Exercises("Tricep Kickback", "Triceps"));
-                exerciseDao.insert(new Exercises("Overhead Tricep Extension", "Triceps"));
-                exerciseDao.insert(new Exercises("Close Grip Bench Press", "Triceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Tricep Dip", "Triceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Skull Crusher", "Triceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Tricep Kickback", "Triceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Overhead Tricep Extension", "Triceps"));
+                exerciseDao.insert(new Exercises(4, 8, "Close Grip Bench Press", "Triceps"));
 
                 // Forearms Exercises
-                exerciseDao.insert(new Exercises("Wrist Curl", "Forearms"));
-                exerciseDao.insert(new Exercises("Reverse Wrist Curl", "Forearms"));
-                exerciseDao.insert(new Exercises("Farmer’s Walk", "Forearms"));
-                exerciseDao.insert(new Exercises("Hammer Curl", "Forearms"));
-                exerciseDao.insert(new Exercises("Wrist Roller", "Forearms"));
+                exerciseDao.insert(new Exercises(4, 8, "Wrist Curl", "Forearms"));
+                exerciseDao.insert(new Exercises(4, 8, "Reverse Wrist Curl", "Forearms"));
+                exerciseDao.insert(new Exercises(4, 8, "Farmer’s Walk", "Forearms"));
+                exerciseDao.insert(new Exercises(4, 8, "Hammer Curl", "Forearms")); // Note: Hammer Curl might be duplicated since it's also listed under Biceps
+                exerciseDao.insert(new Exercises(4, 8, "Wrist Roller", "Forearms"));
 
                 // Abs Exercises
-                exerciseDao.insert(new Exercises("Crunch", "Abs"));
-                exerciseDao.insert(new Exercises("Plank", "Abs"));
-                exerciseDao.insert(new Exercises("Russian Twist", "Abs"));
-                exerciseDao.insert(new Exercises("Leg Raise", "Abs"));
-                exerciseDao.insert(new Exercises("Bicycle Crunch", "Abs"));
+                exerciseDao.insert(new Exercises(4, 8, "Crunch", "Abs"));
+                exerciseDao.insert(new Exercises(4, 8, "Plank", "Abs")); // Planks are usually timed, consider using seconds for duration
+                exerciseDao.insert(new Exercises(4, 8, "Russian Twist", "Abs"));
+                exerciseDao.insert(new Exercises(4, 8, "Leg Raise", "Abs"));
+                exerciseDao.insert(new Exercises(4, 8, "Bicycle Crunch", "Abs"));
 
                 // Shoulders Exercises
-                exerciseDao.insert(new Exercises("Overhead Press", "Shoulders"));
-                exerciseDao.insert(new Exercises("Lateral Raise", "Shoulders"));
-                exerciseDao.insert(new Exercises("Front Raise", "Shoulders"));
-                exerciseDao.insert(new Exercises("Shrugs", "Shoulders"));
-                exerciseDao.insert(new Exercises("Upright Row", "Shoulders"));
+                exerciseDao.insert(new Exercises(4, 8, "Overhead Press", "Shoulders"));
+                exerciseDao.insert(new Exercises(4, 8, "Lateral Raise", "Shoulders"));
+                exerciseDao.insert(new Exercises(4, 8, "Front Raise", "Shoulders"));
+                exerciseDao.insert(new Exercises(4, 8, "Shrugs", "Shoulders")); // Note: Shrugs might be duplicated since it's also listed under Trapezius
+                exerciseDao.insert(new Exercises(4, 8, "Upright Row", "Shoulders"));
 
                 // Quads Exercises
-                exerciseDao.insert(new Exercises("Squat", "Quads"));
-                exerciseDao.insert(new Exercises("Lunge", "Quads"));
-                exerciseDao.insert(new Exercises("Leg Press", "Quads"));
-                exerciseDao.insert(new Exercises("Leg Extension", "Quads"));
-                exerciseDao.insert(new Exercises("Front Squat", "Quads"));
+                exerciseDao.insert(new Exercises(4, 8, "Squat", "Quads"));
+                exerciseDao.insert(new Exercises(4, 8, "Lunge", "Quads"));
+                exerciseDao.insert(new Exercises(4, 8, "Leg Press", "Quads"));
+                exerciseDao.insert(new Exercises(4, 8, "Leg Extension", "Quads"));
+                exerciseDao.insert(new Exercises(4, 8, "Front Squat", "Quads"));
 
                 // Hamstrings Exercises
-                exerciseDao.insert(new Exercises("Deadlift", "Hamstrings"));
-                exerciseDao.insert(new Exercises("Leg Curl", "Hamstrings"));
-                exerciseDao.insert(new Exercises("Good Morning", "Hamstrings"));
-                exerciseDao.insert(new Exercises("Glute-Ham Raise", "Hamstrings"));
-                exerciseDao.insert(new Exercises("Romanian Deadlift", "Hamstrings"));
+                exerciseDao.insert(new Exercises(4, 8, "Deadlift", "Hamstrings"));
+                exerciseDao.insert(new Exercises(4, 8, "Leg Curl", "Hamstrings"));
+                exerciseDao.insert(new Exercises(4, 8, "Good Morning", "Hamstrings"));
+                exerciseDao.insert(new Exercises(4, 8, "Glute-Ham Raise", "Hamstrings"));
+                exerciseDao.insert(new Exercises(4, 8, "Romanian Deadlift", "Hamstrings"));
 
                 // Glutes Exercises
-                exerciseDao.insert(new Exercises("Squat", "Glutes"));
-                exerciseDao.insert(new Exercises("Deadlift", "Glutes"));
-                exerciseDao.insert(new Exercises("Lunge", "Glutes"));
-                exerciseDao.insert(new Exercises("Hip Thrust", "Glutes"));
-                exerciseDao.insert(new Exercises("Glute Bridge", "Glutes"));
+                exerciseDao.insert(new Exercises(4, 8, "Squat", "Glutes"));
+                exerciseDao.insert(new Exercises(4, 8, "Deadlift", "Glutes"));
+                exerciseDao.insert(new Exercises(4, 8, "Lunge", "Glutes"));
+                exerciseDao.insert(new Exercises(4, 8, "Hip Thrust", "Glutes"));
+                exerciseDao.insert(new Exercises(4, 8, "Glute Bridge", "Glutes"));
 
                 // Calves Exercises
-                exerciseDao.insert(new Exercises("Standing Calf Raise", "Calves"));
-                exerciseDao.insert(new Exercises("Seated Calf Raise", "Calves"));
-                exerciseDao.insert(new Exercises("Leg Press Calf Raise", "Calves"));
-                exerciseDao.insert(new Exercises("Calf Dip", "Calves"));
-                exerciseDao.insert(new Exercises("Donkey Calf Raise", "Calves"));
+                exerciseDao.insert(new Exercises(4, 8, "Standing Calf Raise", "Calves"));
+                exerciseDao.insert(new Exercises(4, 8, "Seated Calf Raise", "Calves"));
+                exerciseDao.insert(new Exercises(4, 8, "Leg Press Calf Raise", "Calves"));
+                exerciseDao.insert(new Exercises(4, 8, "Calf Dip", "Calves"));
+                exerciseDao.insert(new Exercises(4, 8, "Donkey Calf Raise", "Calves"));
 
                 // Adductors Exercises
-                exerciseDao.insert(new Exercises("Adductor Machine", "Adductors"));
-                exerciseDao.insert(new Exercises("Cable Hip Adduction", "Adductors"));
-                exerciseDao.insert(new Exercises("Side Lunge", "Adductors"));
-                exerciseDao.insert(new Exercises("Sumo Squat", "Adductors"));
-                exerciseDao.insert(new Exercises("Ball Squeezes", "Adductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Adductor Machine", "Adductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Cable Hip Adduction", "Adductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Side Lunge", "Adductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Sumo Squat", "Adductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Ball Squeezes", "Adductors"));
 
                 // Abductors Exercises
-                exerciseDao.insert(new Exercises("Abductor Machine", "Abductors"));
-                exerciseDao.insert(new Exercises("Cable Hip Abduction", "Abductors"));
-                exerciseDao.insert(new Exercises("Side Leg Raise", "Abductors"));
-                exerciseDao.insert(new Exercises("Band Walks", "Abductors"));
-                exerciseDao.insert(new Exercises("Clamshell", "Abductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Abductor Machine", "Abductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Cable Hip Abduction", "Abductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Side Leg Raise", "Abductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Band Walks", "Abductors"));
+                exerciseDao.insert(new Exercises(4, 8, "Clamshell", "Abductors"));
 
                 // Trapezius Exercises
-                exerciseDao.insert(new Exercises("Shrugs", "Trapezius"));
-                exerciseDao.insert(new Exercises("Upright Row", "Trapezius"));
-                exerciseDao.insert(new Exercises("Face Pull", "Trapezius"));
-                exerciseDao.insert(new Exercises("Dumbbell Row", "Trapezius"));
-                exerciseDao.insert(new Exercises("Farmer’s Walk", "Trapezius"));
+                exerciseDao.insert(new Exercises(4, 8, "Shrugs", "Trapezius"));
+                exerciseDao.insert(new Exercises(4, 8, "Upright Row", "Trapezius"));
+                exerciseDao.insert(new Exercises(4, 8, "Face Pull", "Trapezius"));
+                exerciseDao.insert(new Exercises(4, 8, "Dumbbell Row", "Trapezius"));
+                exerciseDao.insert(new Exercises(4, 8, "Farmer’s Walk", "Trapezius"));
 
                 // Neck Exercises
-                exerciseDao.insert(new Exercises("Neck Flexion", "Neck"));
-                exerciseDao.insert(new Exercises("Neck Extension", "Neck"));
-                exerciseDao.insert(new Exercises("Lateral Neck Flexion", "Neck"));
-                exerciseDao.insert(new Exercises("Neck Rotation", "Neck"));
-                exerciseDao.insert(new Exercises("Dumbbell Shrug", "Neck"));
+                exerciseDao.insert(new Exercises(4, 8, "Neck Flexion", "Neck"));
+                exerciseDao.insert(new Exercises(4, 8, "Neck Extension", "Neck"));
+                exerciseDao.insert(new Exercises(4, 8, "Lateral Neck Flexion", "Neck"));
+                exerciseDao.insert(new Exercises(4, 8, "Neck Rotation", "Neck"));
+                exerciseDao.insert(new Exercises(4, 8, "Dumbbell Shrug", "Neck"));
+
+
 
             });
         }
